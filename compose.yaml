@@ -1,0 +1,104 @@
+version: '3'
+# seperated services for debugging:
+services:
+  zedm_init:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - ${HOME}/zed_docker_ai/:/usr/local/zed/resources/
+    command: ["/bin/bash", "-c", "ros2 launch zed_wrapper zedm.launch.py"]
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  tobii_stream:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - ./gaze_track:/root/ros2_ws/src/gaze_track/
+    working_dir: /root/ros2_ws/
+    command: ["/bin/bash", "-c", "colcon build --packages-select gaze_track && source install/setup.bash && ros2 run gaze_track gaze_2d"]
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  gaze_search:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - ./gaze_track:/root/ros2_ws/src/gaze_track/
+    working_dir: /root/ros2_ws/
+    command: ["/bin/bash", "-c", "colcon build --packages-select gaze_track && source install/setup.bash && ros2 run gaze_track gaze_3d"]
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  rviz2:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+    command: ["/bin/bash", "-c", "rviz2"]
+    network_mode: host
+    environment:
+      - DISPLAY
+  # start the whole system by:
+  all_in_one:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+      - ./gaze_track:/root/ros2_ws/src/gaze_track/
+    working_dir: /root/ros2_ws/
+    command: ["/bin/bash", "-c", "colcon build --packages-select gaze_track && source install/setup.bash && ros2 launch gaze_track gazed3d.launch.py"]
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    environment:
+      - DISPLAY
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  # sacrifice the speed for result display in rviz2:
+  all_in_one_display:
+    image: savicktso/gaze_estimation_3d:latest
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+      - ./gaze_track:/root/ros2_ws/src/gaze_track/
+    working_dir: /root/ros2_ws/
+    command: ["/bin/bash", "-c", "colcon build --packages-select gaze_track && source install/setup.bash && ros2 launch gaze_track gazed3d.launch.py enable_display:=true"]
+    privileged: true
+    network_mode: host
+    ipc: host
+    pid: host
+    environment:
+      - DISPLAY
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
