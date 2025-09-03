@@ -1,8 +1,8 @@
 
-Official ROS2 package implementation for "A Wearable Real-Time 2D/3D Eye-Gaze Interface to Realize Robot Assistance for Quadriplegics"
+Official ROS2 package implementation for ["A Wearable Real-Time 2D/3D Eye-Gaze Interface to Realize Robot Assistance for Quadriplegics"](https://ieeexplore.ieee.org/document/11143148)
 
 ## Installation
-First, clone this repo and make sure the docker engine is installed and you are inside the `/docker` directory. Also, don't forget to enable display by:
+First, clone this repo and make sure the docker engine is installed. Also, don't forget to enable display by:
 
 ```
 cd docker && xhost +
