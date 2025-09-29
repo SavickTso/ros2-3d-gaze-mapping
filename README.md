@@ -34,3 +34,13 @@ You may display the processed images and estimation results by: (this is going t
 docker compose run --rm all_in_one_display
 ```
 
+Consider citing our work:
+```
+@article{cao2025wearable,
+  title={A Wearable Real-Time 2D/3D Eye-Gaze Interface to Realize Robot Assistance for Quadriplegics},
+  author={Cao, Yongpeng and Huang, Shouren and S{\o}rensen, Sune Lund{\o} and Yamakawa, Yuji and Ishikawa, Masatoshi},
+  journal={IEEE Access},
+  year={2025},
+  publisher={IEEE}
+}
+```
